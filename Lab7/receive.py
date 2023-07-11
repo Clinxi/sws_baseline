@@ -1,8 +1,22 @@
 import paho.mqtt.client as mqtt
-import numpy as np
 import json
+from tensorflow.keras.models import load_model
+import tensorflow as tf
+from tensorflow.python.keras.backend import set_session
+import numpy as np
+from PIL import Image
+from os import listdir
+from os.path import join
 
 classes = ["daisy", "dandelion", "poses", "sunflowers", "tulips"]
+MODEL_NAME = 'flower.hd5'
+session = tf.compat.v1.Session(graph=tf.compat.v1.Graph())
+
+def loading_model():
+    with session.graph.as_default():
+        set_session(session)
+        model = load_model(MODEL_NAME)
+        return model
 
 
 def on_connect(client, userdata, flags, rc):
@@ -15,9 +29,12 @@ def on_connect(client, userdata, flags, rc):
 
 def classify_flower(filename, data):
     print("Start classifying")
-    win = 4
+    # with session.graph.as_default():
+    #     set_session(session)
+    result = model.predict(data)
+    themax = np.argmax(result)
     print("Done.")
-    return {"filename": filename, "prediction": classes[win], "score": 0.99, "index": win}
+    return {"filename": filename, "prediction": classes[themax], "score": result[0][themax], "index": themax}
 
 
 def on_message(client, userdata, msg):
@@ -25,9 +42,10 @@ def on_message(client, userdata, msg):
     recv_dict = json.loads(msg.payload)
     # Recreate the data
     img_data = np.array(recv_dict["data"])
+    print(img_data)
     result = classify_flower(recv_dict["filename"], img_data)
     print("Sending results: ", result)
-    client.publish("Group_9/IMAGE/predict", json.dumps(result))
+    client.publish("Group_9/IMAGE/predict", str(result)) # json.dumps(result))
 
 
 def setup(hostname):
@@ -40,6 +58,12 @@ def setup(hostname):
 
 
 def main():
+    # with session.graph.as_default():
+    #     set_session(session)
+    print("Loading model from", MODEL_NAME)
+    global model
+    model = load_model(MODEL_NAME)
+    print("Done")
     setup("127.0.0.1")
     while True:
         pass
