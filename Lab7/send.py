@@ -19,7 +19,8 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     print("Received message from server.")
-    resp_dict = json.loads(msg.payload)
+    # resp_dict = json.loads(msg.payload)
+    resp_dict = eval(msg.payload)
     print("Filename: %s, Prediction: %s, Score: %3.4f"
           % (resp_dict["filename"], resp_dict["prediction"], resp_dict["score"]))
 
