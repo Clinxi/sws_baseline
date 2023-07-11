@@ -8,7 +8,7 @@ classes = ["daisy", "dandelion", "poses", "sunflowers", "tulips"]
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Successfully connected to broker.")
-        client.subscribe("Group_99/IMAGE/classify")
+        client.subscribe("Group_9/IMAGE/classify")
     else:
         print("Connection failed with code: %d." % rc)
 
@@ -27,7 +27,7 @@ def on_message(client, userdata, msg):
     img_data = np.array(recv_dict["data"])
     result = classify_flower(recv_dict["filename"], img_data)
     print("Sending results: ", result)
-    client.publish("Group_99/IMAGE/predict", json.dumps(result))
+    client.publish("Group_9/IMAGE/predict", json.dumps(result))
 
 
 def setup(hostname):

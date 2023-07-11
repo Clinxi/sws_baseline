@@ -2,6 +2,11 @@ import paho.mqtt.client as mqtt
 import numpy as np
 from PIL import Image
 import json
+from os import listdir
+from os.path import join
+
+
+PATH = "./sample"
 
 
 def on_connect(client, userdata, flags, rc):
@@ -40,14 +45,15 @@ def send_image(client, filename):
     img = load_image(filename)
     img_list = img.tolist()
     send_dict = {"filename": filename, "data": img_list}
-    client.publish("Group_99/IMAGE/classify", json.dumps(send_dict))
+    client.publish("Group_9/IMAGE/classify", json.dumps(send_dict))
 
 
 def main():
-    client = setup("127.0.01")
-    print("Sending data.")
-    send_image(client, "sample/tulip.jpg")
-    print("Done. Waiting for results.")
+    client = setup("127.0.0.1")
+    for file in listdir(PATH):
+        print("Sending file: %s." % join(PATH, file))
+        send_image(client, join(PATH, file))
+        print("Done. Waiting for results.")
     while True:
         pass
 
