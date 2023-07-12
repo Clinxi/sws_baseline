@@ -49,7 +49,7 @@ def send_image(client, filename):
 
 
 def main():
-    client = setup("127.0.0.1")
+    client = setup("172.25.106.20")
     for file in listdir(PATH):
         print("Sending file: %s." % join(PATH, file))
         send_image(client, join(PATH, file))
