@@ -64,10 +64,10 @@ def main():
     global model
     model = load_model(MODEL_NAME)
     print("Done")
-    setup("127.0.0.1")
+    setup("localhost")
     while True:
         pass
 
-
+  
 if __name__ == '__main__':
     main()

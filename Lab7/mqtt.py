@@ -9,5 +9,5 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 print("Connecting")
-client.connect("localhost", 1883, 60)
+client.connect("172.25.106.20", 1883, 60)
 client.loop_forever()
